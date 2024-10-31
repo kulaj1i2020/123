@@ -1,0 +1,106 @@
+
+CREATE TABLE autor (
+    id_autora INT PRIMARY KEY,
+    nazwisko VARCHAR(50),
+    imie VARCHAR(50)
+);
+
+
+CREATE TABLE wydawnictwo (
+    id_wydawnic INT PRIMARY KEY,
+    nazwa VARCHAR(50)
+);
+
+
+CREATE TABLE ksiazki (
+    id_ksiazki INT PRIMARY KEY,
+    tytul VARCHAR(100),
+    id_autora INT,
+    cena MONEY,
+    id_wydawnic INT,
+    rok_wydania INT,
+    FOREIGN KEY (id_autora) REFERENCES autor(id_autora) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_wydawnic) REFERENCES wydawnictwo(id_wydawnic) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE klient (
+    id_klienta INT PRIMARY KEY,
+    imie VARCHAR(50),
+    nazwisko VARCHAR(50),
+    miejscowosc VARCHAR(50),
+    kod_pocztowy VARCHAR(6),
+    ulica VARCHAR(50),
+    nr_domu VARCHAR(7),
+    telefon VARCHAR(12),
+    e_mail VARCHAR(50)
+);
+
+
+CREATE TABLE zamowienia (
+    id_zamowien INT PRIMARY KEY,
+    id_klienta INT,
+    data_zamowienia DATETIME,
+    data_wyslania DATETIME,
+    koszt_wysylki MONEY,
+    id_faktury INT,
+    FOREIGN KEY (id_klienta) REFERENCES klient(id_klienta) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+CREATE TABLE szczegoly_zamowienia (
+    id_zamowienia INT,
+    id_ksiazki INT,
+    ilosc INT,
+    FOREIGN KEY (id_zamowienia) REFERENCES zamowienia(id_zamowien) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_ksiazki) REFERENCES ksiazki(id_ksiazki) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE TABLE faktura (
+    id_faktury INT PRIMARY KEY,
+    nr_faktury VARCHAR(50),
+    sposob_platnosci VARCHAR(50),
+    data_wystawienia DATETIME
+);
+
+-- Sample data for each table (approx. 10 records each)
+-- Insert statements will follow a pattern for sample data.
+
+-- Insert sample data into 'autor'
+INSERT INTO autor VALUES (1, 'Kowalski', 'Jan'), (2, 'Nowak', 'Anna'), (3, 'Wisniewski', 'Piotr');
+
+-- Insert sample data into 'wydawnictwo'
+INSERT INTO wydawnictwo VALUES (1, 'PWN'), (2, 'Wydawnictwo Literackie'), (3, 'Helion');
+
+-- Insert sample data into 'ksiazki'
+INSERT INTO ksiazki VALUES 
+    (1, 'Czarna ksiega', 1, 29.99, 1, 2005),
+    (2, 'Zycie i smierc', 2, 49.99, 2, 2012),
+    (3, 'Matematyka dla kazdego', 3, 19.99, 3, 2018);
+
+-- Insert sample data into 'klient'
+INSERT INTO klient VALUES 
+    (1, 'Jan', 'Kowalski', 'Warszawa', '00-001', 'Marszalkowska', '15', '123456789', 'jan.kowalski@example.com'),
+    (2, 'Anna', 'Nowak', 'Krakow', '30-001', 'Florianska', '10', '987654321', 'anna.nowak@example.com');
+
+-- Insert sample data into 'zamowienia'
+INSERT INTO zamowienia VALUES 
+    (1, 1, '2023-01-15', '2023-01-17', 10.00, NULL),
+    (2, 2, '2023-02-20', '2023-02-22', 15.00, NULL);
+
+-- Insert sample data into 'szczegoly_zamowienia'
+INSERT INTO szczegoly_zamowienia VALUES 
+    (1, 1, 2),
+    (1, 2, 1),
+    (2, 3, 3);
+
+-- Insert sample data into 'faktura'
+INSERT INTO faktura VALUES 
+    (1, 'F12345', 'Przelew', '2023-01-16'),
+    (2, 'F12346', 'Karta', '2023-02-21');
+
+-- Modifying records in the tables
+UPDATE klient SET miejscowosc = 'Gdansk' WHERE id_klienta = 1;
+
+-- Deleting records and checking cascade behavior
+DELETE FROM autor WHERE id_autora = 2;
